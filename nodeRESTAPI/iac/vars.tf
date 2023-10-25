@@ -20,3 +20,8 @@ variable "webappName" {
   type        = string
   description = "Desired web-app name"
 }
+
+variable "encryptionSecret" {
+  description = "App encryption secret"
+  type        = string
+}

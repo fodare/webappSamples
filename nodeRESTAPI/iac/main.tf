@@ -38,9 +38,8 @@ resource "azurerm_linux_web_app" "test_webapp" {
   }
   app_settings = {
     PORT                           = 3000
-    SECRET                         = "funntSecret"
+    SECRET                         = var.encryptionSecret
     SALT_ROUNDS                    = 10
     SCM_DO_BUILD_DURING_DEPLOYMENT = true
-
   }
 }
