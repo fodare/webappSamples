@@ -132,3 +132,5 @@ nodeRESTAPI/package-lock.json
 .vscode/ltex.dictionary.en-US.txt
 nodeRESTAPI/iac/.terraform.lock.hcl
 nodeRESTAPI/iac/.terraform/providers/registry.terraform.io/hashicorp/azurerm/3.0.0/linux_amd64/terraform-provider-azurerm_v3.0.0_x5
+nodeRESTAPI/iac/terraform.tfstate.backup
+nodeRESTAPI/.azure/config
