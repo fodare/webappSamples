@@ -58,7 +58,7 @@ stages:
           - task: ArchiveFiles@2
             displayName: Archive app file
             inputs:
-              rootFolderOrFile: '$(defaultWorkingDir)'
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/nodeRESTAPI'
               includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
@@ -80,5 +80,5 @@ stages:
               deployToSlotOrASE: true
               ResourceGroupName: 'test-rg'
               SlotName: 'production'
-              packageForLinux: '$(Pipeline.Workspace)/$(Build.BuildId).zip'
+              packageForLinux: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
               RuntimeStack: 'NODE|16-lts'
