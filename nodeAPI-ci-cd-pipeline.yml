@@ -1,0 +1,86 @@
+trigger:
+- main
+
+pool:
+  name: Default
+  # vmImage: ubuntu-latest
+
+variables:
+  defaultWorkingDir: $(System.DefaultWorkingDirectory)/nodeRESTAPI
+
+stages:
+  - stage: Build
+    jobs:
+      - job: clean
+        displayName: Clean working dir
+        workspace:
+          clean: all
+      
+      - job: BuildInfrastructure
+        displayName: Build App service
+        steps:
+        - task: TerraformCLI@1
+          displayName: Terraform Init
+          inputs:
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/nodeRESTAPI/iac'
+            allowTelemetryCollection: false
+        
+        - task: TerraformCLI@1
+          displayName: Terraform validate
+          inputs:
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/nodeRESTAPI/iac'
+            allowTelemetryCollection: false
+          
+        - task: TerraformCLI@1
+          displayName: Terraform  plan
+          inputs:
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/nodeRESTAPI/iac'
+            environmentServiceName: 'TempServiceConnection'
+            commandOptions: '-var webappName=$(webappName) -var encryptionSecret=$(encryptionSecret)'
+            allowTelemetryCollection: false
+        
+      
+        - task: TerraformCLI@1
+          displayName: Terraform apply
+          inputs:
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/nodeRESTAPI/iac'
+            environmentServiceName: 'TempServiceConnection'
+            commandOptions: '-var webappName=$(webappName) -var encryptionSecret=$(encryptionSecret)'
+            allowTelemetryCollection: false
+
+  - stage: Deploy
+    jobs:
+      - job: DeployApp
+        displayName: Deloy app to  app service
+        steps:
+          - task: ArchiveFiles@2
+            displayName: Archive app file
+            inputs:
+              rootFolderOrFile: '$(Build.BinariesDirectory)/nodeRESTAPI'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              replaceExistingArchive: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: Publish drop artifacts
+            inputs:
+              targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              artifact: 'drop-nodeApp'
+              publishLocation: 'pipeline'
+              
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'TempServiceConnection'
+              appType: 'webAppLinux'
+              WebAppName: 'funnywebappapi'
+              deployToSlotOrASE: true
+              ResourceGroupName: 'test-rg'
+              SlotName: 'production'
+              packageForLinux: '$(Pipeline.Workspace)/$(Build.BuildId).zip'
+              RuntimeStack: 'NODE|16-lts'
