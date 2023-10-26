@@ -41,16 +41,14 @@ stages:
             environmentServiceName: 'TempServiceConnection'
             commandOptions: '-var webappName=$(webappName) -var encryptionSecret=$(encryptionSecret)'
             allowTelemetryCollection: false
-        
-      
-        - task: TerraformCLI@1
-          displayName: Terraform apply
+        - task: TerraformTaskV4@4
+          displayName: Terraform   apply
           inputs:
+            provider: 'azurerm'
             command: 'apply'
             workingDirectory: '$(System.DefaultWorkingDirectory)/nodeRESTAPI/iac'
-            environmentServiceName: 'TempServiceConnection'
             commandOptions: '-var webappName=$(webappName) -var encryptionSecret=$(encryptionSecret)'
-            allowTelemetryCollection: false
+            environmentServiceNameAzureRM: 'TempServiceConnection'
 
   - stage: Deploy
     jobs:
