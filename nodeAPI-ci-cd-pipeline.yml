@@ -58,7 +58,7 @@ stages:
           - task: ArchiveFiles@2
             displayName: Archive app file
             inputs:
-              rootFolderOrFile: '$(Build.BinariesDirectory)/nodeRESTAPI'
+              rootFolderOrFile: '$(defaultWorkingDir)'
               includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
