@@ -139,3 +139,4 @@ nodeRESTAPI/iac/terraform.tfstate
 
 # Flask app 
 .venv*
+*.cpython* 
