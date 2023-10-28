@@ -135,3 +135,8 @@ nodeRESTAPI/iac/.terraform/providers/registry.terraform.io/hashicorp/azurerm/3.0
 nodeRESTAPI/iac/terraform.tfstate.backup
 nodeRESTAPI/.azure/config
 nodeRESTAPI/iac/terraform.tfstate
+
+
+# Flask app 
+.venv*
+*.cpython* 
