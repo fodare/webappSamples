@@ -27,7 +27,7 @@ resource "azurerm_service_plan" "sp" {
 }
 
 resource "azurerm_linux_web_app" "alwa" {
-  name                = var.service_plan_name
+  name                = var.web_app_name
   resource_group_name = azurerm_resource_group.test_rg.name
   location            = azurerm_resource_group.test_rg.location
   service_plan_id     = azurerm_service_plan.sp.id
