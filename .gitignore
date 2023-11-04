@@ -142,3 +142,9 @@ nodeRESTAPI/iac/terraform.tfstate
 *.cpython* 
 */.azure/config
 
+#  Terraform local files
+
+*.terraform*
+
+*.pyc
+*terraform.*
