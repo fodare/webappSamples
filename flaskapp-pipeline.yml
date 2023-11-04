@@ -1,0 +1,83 @@
+trigger:
+- main
+
+pool:
+  name: Default
+  # vmImage: ubuntu-latest
+
+variables:
+  defaultWorkingDir: $(System.DefaultWorkingDirectory)/flaskRESTAPI
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Clean
+        displayName: Clean working dir
+        workspace:
+          clean: all
+      
+      - job: Buildwebapp 
+        displayName: Build azure  linux web app
+        steps:
+        - task: TerraformCLI@1
+          displayName: Terraform init
+          inputs:
+            command: 'init'
+            allowTelemetryCollection: false
+            workingDirectory: '$(System.DefaultWorkingDirectory)/flaskRESTAPI/iac'
+        
+        - task: TerraformCLI@1
+          displayName: Terraform validate
+          inputs:
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/flaskRESTAPI/iac'
+            allowTelemetryCollection: false
+        
+        - task: TerraformTaskV4@4
+          displayName: Terraform plan
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)flaskRESTAPI/iac'
+            commandOptions: '-var resource_group=$(resource_group) -var service_plan_name=$(service_plan_name) -var web_app_name=$(web_app_name) -var secret_encryption=$(secret_encryption)'
+            environmentServiceNameAzureRM: 'TempServiceConnection'
+
+        - task: TerraformTaskV4@4
+          displayName: Terraform apply
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)flaskRESTAPI/iac'
+            commandOptions: '-var resource_group=$(resource_group) -var service_plan_name=$(service_plan_name) -var web_app_name=$(web_app_name) -var secret_encryption=$(secret_encryption)'
+            environmentServiceNameAzureRM: 'TempServiceConnection'
+
+  - stage: Deploy
+    jobs:
+      - job: Deploy
+        displayName: Deploy app to app service
+        steps:
+          - task: ArchiveFiles@2
+            displayName: Archive app files
+            inputs:
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/flaskRESTAPI'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              replaceExistingArchive: true
+        
+          - task: PublishPipelineArtifact@1
+            displayName: Publish app artifacts
+            inputs:
+              targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              artifact: 'drop-flaskapp'
+              publishLocation: 'pipeline'
+
+          - task: AzureRmWebAppDeployment@4
+            displayName: Deplploy web app
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'TempServiceConnection'
+              appType: 'webAppLinux'
+              WebAppName: $(web_app_name)
+              packageForLinux: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              RuntimeStack: 'PYTHON|3.9'
