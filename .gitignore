@@ -147,4 +147,4 @@ nodeRESTAPI/iac/terraform.tfstate
 *.terraform*
 
 *.pyc
-*terraform.tfstate.backup
+*terraform.*
