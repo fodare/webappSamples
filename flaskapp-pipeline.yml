@@ -38,7 +38,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'plan'
-            workingDirectory: '$(System.DefaultWorkingDirectory)flaskRESTAPI/iac'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/flaskRESTAPI/iac'
             commandOptions: '-var resource_group=$(resource_group) -var service_plan_name=$(service_plan_name) -var web_app_name=$(web_app_name) -var secret_encryption=$(secret_encryption)'
             environmentServiceNameAzureRM: 'TempServiceConnection'
 
@@ -47,7 +47,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'apply'
-            workingDirectory: '$(System.DefaultWorkingDirectory)flaskRESTAPI/iac'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/flaskRESTAPI/iac'
             commandOptions: '-var resource_group=$(resource_group) -var service_plan_name=$(service_plan_name) -var web_app_name=$(web_app_name) -var secret_encryption=$(secret_encryption)'
             environmentServiceNameAzureRM: 'TempServiceConnection'
 
