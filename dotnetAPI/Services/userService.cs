@@ -1,19 +1,27 @@
 using dotnetAPI.Models;
 using dotnetAPI.Models.Requests;
 using dotnetAPI.Models.Responses;
+using Microsoft.AspNetCore.Identity;
 
 namespace dotnetAPI.Services
 {
     public class UserService : IUserInterface
     {
-        private readonly UserModel[] users = {
+        private readonly List<UserModel> users = new(){
             new() {UserName = "admin", Password = "babayega", IsAdmin=true}
         };
 
-        public Task<ResponseModel<UserModel>> CreateUser(UserModel user)
+        public ResponseModel<UserModel> CreateUser(UserModel user)
         {
-            throw new NotImplementedException();
+            var response = new ResponseModel<UserModel>();
+            users.Add(new UserModel { UserName = user.UserName, Password = user.Password, IsAdmin = user.IsAdmin });
+            Console.WriteLine(users);
+            response.Data = user;
+            response.Message = "User account created!";
+            response.success = true;
+            return response;
         }
+
         public Task<ResponseModel<UserModel>> GetUser()
         {
             throw new NotImplementedException();
