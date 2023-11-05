@@ -8,7 +8,7 @@ namespace dotnetAPI.Services
     {
         Task<ResponseModel<UserModel>> GetUser();
         ResponseModel<List<UserModel>> GetUsers();
-        Task<ResponseModel<UserModel>> CreateUser(UserModel user);
+        ResponseModel<UserModel> CreateUser(UserModel user);
         Task<ResponseModel<LoginResponseModel>> Login(LoginModel login);
     }
 }
