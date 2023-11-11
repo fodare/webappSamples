@@ -15,16 +15,23 @@ namespace dotnetAPI.Services
         {
             var response = new ResponseModel<UserModel>();
             users.Add(new UserModel { UserName = user.UserName, Password = user.Password, IsAdmin = user.IsAdmin });
-            Console.WriteLine(users);
             response.Data = user;
             response.Message = "User account created!";
             response.success = true;
             return response;
         }
 
-        public Task<ResponseModel<UserModel>> GetUser()
+        public UserModel GetUser(String username)
         {
-            throw new NotImplementedException();
+            var userFound = users.FirstOrDefault(user => user.UserName == username);
+            if (userFound != null)
+            {
+                return userFound;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public ResponseModel<List<UserModel>> GetUsers()
@@ -46,9 +53,23 @@ namespace dotnetAPI.Services
             return response;
         }
 
-        public Task<ResponseModel<LoginResponseModel>> Login(LoginModel login)
+        public ResponseModel<string> Login(LoginModel login)
         {
-            throw new NotImplementedException();
+            var response = new ResponseModel<string>();
+            var userfound = GetUser(login.UserName);
+            if (userfound != null && userfound.Password == login.Password)
+            {
+                response.Data = "Go out, touch some grass!";
+                response.Message = "Loged in successfully!";
+                response.success = true;
+            }
+            else
+            {
+                response.Data = null;
+                response.Message = "Login failed!";
+                response.success = false;
+            }
+            return response;
         }
     }
 }
