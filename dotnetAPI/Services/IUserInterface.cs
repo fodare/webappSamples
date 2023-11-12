@@ -6,9 +6,9 @@ namespace dotnetAPI.Services
 {
     public interface IUserInterface
     {
-        Task<ResponseModel<UserModel>> GetUser();
+        UserModel GetUser(String username);
         ResponseModel<List<UserModel>> GetUsers();
         ResponseModel<UserModel> CreateUser(UserModel user);
-        Task<ResponseModel<LoginResponseModel>> Login(LoginModel login);
+        ResponseModel<string> Login(LoginModel login);
     }
 }
