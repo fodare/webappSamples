@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 using dotnetAPI.Models;
@@ -34,12 +35,45 @@ namespace dotnetAPI.Services
 
         public ResponseModel<PostModel> CreatePost(PostModel post)
         {
-            throw new NotImplementedException();
+            var response = new ResponseModel<PostModel>();
+            try
+            {
+                posts.Add(new PostModel
+                {
+                    userId = post.userId,
+                    id = post.id,
+                    title = post.title,
+                    body = post.body
+                });
+                response.Data = post;
+                response.Message = "Post saved to memory!";
+                response.success = true;
+            }
+            catch (Exception e)
+            {
+                response.Data = post;
+                response.Message = $"Error saving post to memory.{e.Message}";
+                response.success = false;
+            }
+            return response;
         }
 
         public ResponseModel<string> DeletePost(int postId)
         {
-            throw new NotImplementedException();
+            var qureiedPost = posts.Find(post => post.id == postId);
+            var response = new ResponseModel<string>();
+            if (qureiedPost != null)
+            {
+                posts.Remove(qureiedPost);
+                response.Message = "Post removed  successfully!";
+                response.success = true;
+            }
+            else
+            {
+                response.Message = "Querid post not found";
+                response.success = false;
+            }
+            return response;
         }
 
         public ResponseModel<PostModel> GetPost(int postId)
@@ -78,7 +112,7 @@ namespace dotnetAPI.Services
             return response;
         }
 
-        public ResponseModel<PostModel> UpdatePost(PostModel updatedPost)
+        public ResponseModel<PostModel> UpdatePost(PostModel updatedPost, int postId)
         {
             throw new NotImplementedException();
         }

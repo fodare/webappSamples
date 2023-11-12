@@ -79,5 +79,33 @@ namespace dotnetAPI.Controllers
                 return BadRequest(response);
             }
         }
+
+        [HttpPost("createpost", Name = "CreatePost")]
+        public ActionResult CreatePost(PostModel newpost)
+        {
+            var response = _postInterface.CreatePost(newpost);
+            if (response.success)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(response);
+            }
+        }
+
+        [HttpDelete("deletepost/{postId}", Name = "DeletePost")]
+        public ActionResult DeletePost(int postId)
+        {
+            var response = _postInterface.DeletePost(postId);
+            if (response.success)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(response);
+            }
+        }
     }
 }

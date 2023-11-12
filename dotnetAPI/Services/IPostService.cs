@@ -15,7 +15,7 @@ namespace dotnetAPI.Services
 
         ResponseModel<PostModel> CreatePost(PostModel post);
 
-        ResponseModel<PostModel> UpdatePost(PostModel updatedPost);
+        ResponseModel<PostModel> UpdatePost(PostModel updatedPost, int postId);
 
         ResponseModel<string> DeletePost(int postId);
     }
